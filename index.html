@@ -29,46 +29,79 @@
     </script>
 
     <style>
-        /* 隱藏捲軸但保留捲動功能，提升整體美觀 */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f6f4f0; }
+        ::-webkit-scrollbar-thumb { background: #d4cfc7; border-radius: 10px; }
+        
+        body { background-color: #f6f4f0; color: #2c302e; }
+        
+        /* 鎖定背景滑動（當封面還在時） */
+        body.locked { overflow: hidden; }
+
+        .section-hidden { display: none; }
+        .timeline-dot { width: 12px; height: 12px; background-color: #8b7a66; border-radius: 50%; position: absolute; left: -6px; top: 6px; }
+        input[type="checkbox"] { accent-color: #879471; }
+        input[type="checkbox"]:checked + span { text-decoration: line-through; color: #9ca3af; }
+
+        /* --- 新增：專屬封面頁樣式 --- */
+        #cover-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* 將檔名設定為 cover.jpg，背景顏色抓取圖片邊緣的米色 */
+            background-color: #e5e4de; 
+            background-image: url('cover.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 9999;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-end; /* 讓文字靠下 */
+            justify-content: center;
+            padding-bottom: 15vh;
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        ::-webkit-scrollbar-track {
-            background: #f6f4f0;
+
+        /* 封面消失的動畫狀態 */
+        #cover-page.hidden {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #d4cfc7;
-            border-radius: 10px;
+
+        /* 點擊提示文字的呼吸燈特效 */
+        .cover-instruction {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: #8b7a66;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        body {
-            background-color: #f6f4f0; /* jp-paper */
-            color: #2c302e; /* jp-ink */
-        }
-        .section-hidden {
-            display: none;
-        }
-        .timeline-dot {
-            width: 12px;
-            height: 12px;
-            background-color: #8b7a66;
-            border-radius: 50%;
-            position: absolute;
-            left: -6px;
-            top: 6px;
-        }
-        /* 自訂核取方塊的顏色 */
-        input[type="checkbox"] {
-            accent-color: #879471;
-        }
-        /* 打勾時文字加上刪除線與變淡的特效 */
-        input[type="checkbox"]:checked + span {
-            text-decoration: line-through;
-            color: #9ca3af;
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
         }
     </style>
 </head>
-<body class="font-sans antialiased text-jp-ink">
+<body class="font-sans antialiased text-jp-ink locked">
+
+    <div id="cover-page">
+        <div class="cover-instruction">
+            <span>👆</span> Tap to Start
+        </div>
+    </div>
 
     <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -87,15 +120,14 @@
     </nav>
 
     <main class="pt-36 sm:pt-32 pb-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-
+        
         <section id="overview-section" class="fade-in block">
             <div class="text-center mb-12">
                 <h1 class="font-serif text-4xl font-bold mb-4 text-jp-wood tracking-widest">東京四日沁夏之旅</h1>
                 <p class="text-gray-500">2026 專屬客製化行程表</p>
             </div>
-
             <div class="flex justify-center mb-12">
-                <img src="https://docs.google.com/drawings/d/e/2PACX-1vQ5DACzvH8oxk6opRhBCszIWSv0V98rKmNYA_HNIicSradOFGttohChUTTaqHKQ3CO4HNwYAxqCv3oF/pub?w=1440&h=1080" alt="東京自由行景點指南" class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+                <img src="https://docs.google.com/drawings/d/e/2PACX-1vQ5DACzvH8oxk6opRhBCszIWSv0V98rKmNYA_HNIicSradOFGttohChUTTaqHKQ3CO4HNwYAxqCv3oF/pub?w=1440&h=1080" alt="東京自由行景點指南" class="max-w-full h-auto rounded-lg shadow-md border border-gray-200" onerror="this.style.display='none'">
             </div>
         </section>
 
@@ -104,9 +136,7 @@
                 <h2 class="font-serif text-3xl font-bold mb-4 text-jp-wood">行前準備 CheckList</h2>
                 <p class="text-gray-500 text-sm">點擊項目打勾，確認行李都帶齊了！</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto" id="checklist-container">
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto" id="checklist-container"></div>
         </section>
 
         <section id="itinerary-section" class="section-hidden">
@@ -116,10 +146,8 @@
                 <button onclick="renderTimeline(3)" class="day-btn px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-md text-sm hover:bg-gray-50 transition-colors whitespace-nowrap">DAY 3 (江之島/鎌倉)</button>
                 <button onclick="renderTimeline(4)" class="day-btn px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-md text-sm hover:bg-gray-50 transition-colors whitespace-nowrap">DAY 4 (新宿/成田/返程)</button>
             </div>
-
             <div class="bg-white p-6 sm:p-10 rounded-lg shadow-sm border border-gray-100">
-                <div id="timeline-container" class="relative border-l-2 border-gray-200 ml-3 sm:ml-6 space-y-8">
-                </div>
+                <div id="timeline-container" class="relative border-l-2 border-gray-200 ml-3 sm:ml-6 space-y-8"></div>
             </div>
         </section>
 
@@ -133,16 +161,13 @@
                     <button onclick="filterFood('dessert')" class="food-filter px-4 py-1.5 bg-white border border-gray-300 text-gray-600 rounded-full text-sm hover:bg-gray-50">甜點 / 伴手禮</button>
                 </div>
             </div>
-
-            <div id="food-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            </div>
+            <div id="food-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
         </section>
 
     </main>
 
     <script>
-        // --- 核心資料區 ---
-
+        // --- 核心資料區 (保留您完整的行程與美食資料) ---
         const tripData = {
             1: [
                 { time: '21:00', type: 'transport', title: '搭車 (UGO)', duration: '出發前往機場', icon: '🚗' },
@@ -150,10 +175,10 @@
                 { time: '05:35', type: 'transport', title: '搭乘京急線', duration: '約 30m', icon: '🚆', route: '羽田機場 → 東銀座' },
                 { time: '06:05', type: 'spot', title: '東銀座', memo: '放行李', icon: '📍', map: '東銀座站' },
                 { time: '06:30', type: 'transport', title: '交通', duration: '約 15m', icon: '🚆', route: '東銀座 → 淺草' },
-                { time: '上午', type: 'spot', title: '淺草周邊散步', memo: '早午餐：Kagetsudo Kaminarimon (花月堂), Kamejuu (龜十)<br>小吃甜點：淺草絲滑布丁, 淺草炸肉餅, CANELÉ et CRÈME GLACÉE', icon: '⛩️', map: '淺草寺雷門' },
+                { time: '上午', type: 'spot', title: '淺草周邊散策', memo: '早午餐：Kagetsudo Kaminarimon (花月堂), Kamejuu (龜十)<br>小吃甜點：淺草絲滑布丁, 淺草炸肉餅, CANELÉ et CRÈME GLACÉE', icon: '⛩️', map: '淺草寺雷門' },
                 { time: '中午', type: 'transport', title: '步行', duration: '依步伐而定', icon: '🚶', route: '淺草 → 押上(晴空塔)' },
                 { time: '午餐', type: 'food', title: 'Gyutan no Lemon Asakusa Branch', memo: '午餐', icon: '🍽️', map: 'Gyutan no Lemon Asakusa Branch' },
-                { time: '下午', type: 'spot', title: '藏前散步', memo: '體驗下町風情', icon: '📍', map: '藏前' },
+                { time: '下午', type: 'spot', title: '藏前散策', memo: '體驗下町風情', icon: '📍', map: '藏前' },
                 { time: '下午', type: 'transport', title: '交通', duration: '約 30m', icon: '🚆', route: '藏前 → 豐洲' },
                 { time: '下午', type: 'spot', title: 'Super Viva Home Toyosu', memo: '逛街購物', icon: '🛍️', map: 'Super Viva Home Toyosu' },
                 { time: '下午', type: 'transport', title: '交通', duration: '約 25m', icon: '🚆', route: '豐洲 → 東銀座' },
@@ -218,32 +243,28 @@
             { name: 'Espresso D Works', type: 'main', loc: '七里濱', map: 'Espresso D Works 七里ヶ浜' }
         ];
 
-        // 行前準備資料
         const checklistData = [
-            {
-                category: '重要物件',
-                icon: '🛂',
-                items: ['身分證件', '護照', '信用卡', '網卡', '登機證', '預定單', '外幣', '文具', '台幣', '入境檢查表', '鑰匙', '旅行保險', '2吋照片*2']
-            },
-            {
-                category: '背包用品',
-                icon: '🎒',
-                items: ['手機掛繩', '衛生紙', '護手霜', '錢包', '濕紙巾']
-            },
-            {
-                category: '3C用品',
-                icon: '🔌',
-                items: ['萬用插頭', '相機充電', '相機', '行充', '記憶卡', '手機充電', '手錶充電']
-            },
-            {
-                category: '日常用品',
-                icon: '🧴',
-                items: ['牙刷牙膏', '毛巾浴巾', '擦臉紙巾', '醫務用品', '洗面乳', '衛生棉', '卸妝乳', '保養品', '化妝品', '口罩', '洗浴用品', '刮鬍刀', '垃圾袋', '護髮油', '雨傘', '挖耳棒', '眉夾', '日常用藥', '指甲剪', '棉花棒', '梳子', '頸枕耳塞', '乾髮帽', '綁頭髮', '衣物', '痘痘貼', '修眉刀']
-            }
+            { category: '重要物件', icon: '🛂', items: ['身分證件', '護照', '信用卡', '網卡', '登機證', '預定單', '外幣', '文具', '台幣', '入境檢查表', '鑰匙', '旅行保險', '2吋照片*2'] },
+            { category: '背包用品', icon: '🎒', items: ['手機掛繩', '衛生紙', '護手霜', '錢包', '濕紙巾'] },
+            { category: '3C用品', icon: '🔌', items: ['萬用插頭', '相機充電', '相機', '行充', '記憶卡', '手機充電', '手錶充電'] },
+            { category: '日常用品', icon: '🧴', items: ['牙刷牙膏', '毛巾浴巾', '擦臉紙巾', '醫務用品', '洗面乳', '衛生棉', '卸妝乳', '保養品', '化妝品', '口罩', '洗浴用品', '刮鬍刀', '垃圾袋', '護髮油', '雨傘', '挖耳棒', '眉夾', '日常用藥', '指甲剪', '棉花棒', '梳子', '頸枕耳塞', '乾髮帽', '綁頭髮', '衣物', '痘痘貼', '修眉刀'] }
         ];
 
 
         // --- 互動邏輯區 ---
+
+        // 1. 處理封面點擊事件 (新增)
+        document.getElementById('cover-page').addEventListener('click', function() {
+            // 加入隱藏的 class，觸發 CSS 淡出與放大動畫
+            this.classList.add('hidden');
+            // 移除 body 的 locked，允許往下捲動瀏覽
+            document.body.classList.remove('locked');
+            
+            // 等待動畫結束後 (0.8秒)，將元素徹底從畫面上移除，避免擋住按鈕
+            setTimeout(() => {
+                this.style.display = 'none';
+            }, 800);
+        });
 
         function switchTab(tabId) {
             document.getElementById('overview-section').style.display = 'none';
