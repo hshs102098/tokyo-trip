@@ -48,9 +48,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            max-width: 100%;
-            height: auto;
-            display: block;
+            width: 100vw;
+            height: 100vh;
             /* 將檔名設定為 cover.jpg，背景顏色抓取圖片邊緣的米色 */
             background-color: #e5e4de; 
             background-image: url('cover.jpg'); 
@@ -172,7 +171,7 @@
         const tripData = {
             1: [
                 { time: '21:00', type: 'transport', title: '搭車 (UGO)', duration: '出發前往機場', icon: '🚗' },
-                { time: '00:10-04:25', type: 'transport', title: '搭機飛往日本 (羽田機場)', duration: '飛行時間約 4h 15m', icon: '✈️' },
+                { time: '00:10-04:25', type: 'transport', title: '搭機飛往日本 (羽田機場)', duration: '飛行時間約 3h 15m', icon: '✈️' },
                 { time: '05:35', type: 'transport', title: '搭乘京急線', duration: '約 30m', icon: '🚆', route: '羽田機場 → 東銀座' },
                 { time: '06:05', type: 'spot', title: '東銀座', memo: '放行李', icon: '📍', map: '東銀座站' },
                 { time: '06:30', type: 'transport', title: '交通', duration: '約 15m', icon: '🚆', route: '東銀座 → 淺草' },
