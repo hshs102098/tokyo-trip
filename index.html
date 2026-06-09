@@ -49,19 +49,19 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
-            /* 將檔名設定為 cover.jpg，背景顏色抓取圖片邊緣的米色 */
+            height: 100vh; /* 舊版瀏覽器的備用方案 */
+            height: 100dvh; /* 動態抓取手機實際螢幕高度，不被網址列吃掉 */
             background-color: #e5e4de; 
             background-image: url('cover.jpg'); 
-            background-size: cover;
+            background-size: contain; /* 確保整張圖片完整顯示，不被裁切 */
             background-position: center;
             background-repeat: no-repeat;
             z-index: 9999;
             cursor: pointer;
             display: flex;
-            align-items: flex-end; /* 讓文字靠下 */
+            align-items: flex-end; 
             justify-content: center;
-            padding-bottom: 15vh;
+            padding-bottom: 8vh; /* 將點擊提示稍微往上拉，避免擋到圖片原本底部的字 */
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
